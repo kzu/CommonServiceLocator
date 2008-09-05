@@ -1,1 +1,13 @@
 * text=auto !eol
+main/Microsoft.Practices.ServiceLocation.sln -text
+main/Microsoft.Practices.ServiceLocation/ActivationException.Desktop.cs -text
+main/Microsoft.Practices.ServiceLocation/ActivationException.cs -text
+main/Microsoft.Practices.ServiceLocation/IServiceLocator.cs -text
+main/Microsoft.Practices.ServiceLocation/Microsoft.Practices.ServiceLocation.csproj -text
+main/Microsoft.Practices.ServiceLocation/Properties/AssemblyInfo.cs -text
+main/Microsoft.Practices.ServiceLocation/Properties/Resources.Designer.cs -text
+main/Microsoft.Practices.ServiceLocation/Properties/Resources.resx -text
+main/Microsoft.Practices.ServiceLocation/Readme.txt -text
+main/Microsoft.Practices.ServiceLocation/ServiceLocator.cs -text
+main/Microsoft.Practices.ServiceLocation/ServiceLocatorImplBase.cs -text
+main/Microsoft.Practices.ServiceLocation/ServiceLocatorProvider.cs -text
