@@ -1,4 +1,6 @@
 * text=auto !eol
+BuildProcessTemplates/DefaultTemplate.xaml -text
+BuildProcessTemplates/UpgradeTemplate.xaml -text
 main/Microsoft.Practices.ServiceLocation.Silverlight.sln -text
 main/Microsoft.Practices.ServiceLocation.Silverlight/Microsoft.Practices.ServiceLocation.Silverlight.csproj -text
 main/Microsoft.Practices.ServiceLocation.sln -text
