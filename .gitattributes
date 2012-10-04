@@ -3,6 +3,8 @@ BuildProcessTemplates/DefaultTemplate.11.1.xaml -text
 BuildProcessTemplates/DefaultTemplate.xaml -text
 BuildProcessTemplates/LabDefaultTemplate.11.xaml -text
 BuildProcessTemplates/UpgradeTemplate.xaml -text
+main/Microsoft.Practices.ServiceLocation.PortableClassLibrary.sln -text
+main/Microsoft.Practices.ServiceLocation.PortableClassLibrary/Microsoft.Practices.ServiceLocation.PortableClassLibrary.csproj -text
 main/Microsoft.Practices.ServiceLocation.Silverlight.sln -text
 main/Microsoft.Practices.ServiceLocation.Silverlight/Microsoft.Practices.ServiceLocation.Silverlight.csproj -text
 main/Microsoft.Practices.ServiceLocation.sln -text
