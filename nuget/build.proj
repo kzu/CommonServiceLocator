@@ -24,7 +24,7 @@ File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Ma
         <PackageRoot>$(MSBuildThisFileDirectory)package</PackageRoot>
         <ContentDir>$(PackageRoot)\content\External\ServiceLocation\</ContentDir>
         <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
-        <PackageSpec>"$(PackageRoot)\CommonServiceLocator.Source.nuspec"</PackageSpec>
+        <PackageSpec>$(PackageRoot)\CommonServiceLocator.Source.nuspec</PackageSpec>
 
         <DesignerSource>..\main\Microsoft.Practices.ServiceLocation\Properties\Resources.Designer.cs</DesignerSource>
         <DesignerTarget>$(ContentDir)Properties\Resources.Designer.cs.pp</DesignerTarget>
@@ -60,8 +60,9 @@ File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Ma
 
         <!-- Make .Resources.Designer.cs aware of the target project assembly name. -->
         <ReplaceContents FileName='$(DesignerTarget)' Match='ResourceManager("Microsoft.Practices' Replace='ResourceManager("$AssemblyName$.External' />
-
-        <Exec Command="&quot;$(NuGet)&quot; pack -NoPackageAnalysis $(PackageSpec) -OutputDirectory $(OutDir) -Version &quot;$(PackageVersion)&quot;" />
+        <ReplaceContents FileName='$(PackageSpec)' Match='$PackageVersion$' Replace='$(PackageVersion)' />
+        
+        <Exec Command="&quot;$(NuGet)&quot; pack -NoPackageAnalysis &quot;$(PackageSpec)&quot; -OutputDirectory $(OutDir) -Version &quot;$(PackageVersion)&quot;" />
     </Target>
 
     <Target Name="Clean">
