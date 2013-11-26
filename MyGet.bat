@@ -1,0 +1,1 @@
+%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild %~dp0\nuget\build.proj /verbosity:normal /nr:false /p:NuGet=%NuGet% /p:PackageVersion=%PackageVersion%

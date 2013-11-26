@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0"
+         DefaultTargets="Build"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <UsingTask TaskName="ReplaceContents" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+        <ParameterGroup>
+            <FileName ParameterType="System.String" Required="true" />
+            <Match ParameterType="System.String" Required="true" />
+            <Replace ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System.IO"/>
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
+File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Match, this.Replace));                
+]]>
+            </Code>
+        </Task>
+    </UsingTask>
+
+	<PropertyGroup>
+        <NuGet Condition="'$(NuGet)' == ''">$(MSBuildThisFileDirectory)NuGet.exe</NuGet>
+        <OutDir>"$(MSBuildThisFileDirectory.TrimEnd('\'))"</OutDir>
+        <PackageRoot>$(MSBuildThisFileDirectory)package</PackageRoot>
+        <ContentDir>$(PackageRoot)\content\External\ServiceLocation\</ContentDir>
+        <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
+        <PackageSpec>"$(PackageRoot)\CommonServiceLocator.Source.nuspec"</PackageSpec>
+
+        <DesignerSource>..\main\Microsoft.Practices.ServiceLocation\Properties\Resources.Designer.cs</DesignerSource>
+        <DesignerTarget>$(ContentDir)Properties\Resources.Designer.cs.pp</DesignerTarget>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Excluded Include="..\main\Microsoft.Practices.ServiceLocation\ActivationException.Desktop.cs" />
+        <Excluded Include="..\main\Microsoft.Practices.ServiceLocation\Properties\AssemblyInfo*.cs" />
+        <Excluded Include="$(DesignerSource)" />
+		<Content Include="..\main\Microsoft.Practices.ServiceLocation\**\*.cs" 
+                 Exclude="@(Excluded)" />
+		<Content Include="..\main\Microsoft.Practices.ServiceLocation\**\*.resx" />
+    </ItemGroup>
+
+    <Target Name="Build">
+        <ItemGroup>
+            <!-- Causes batching, which allows us to use a transform -->
+            <Content Condition="'%(Content.Identity)' != ''">
+                <Destination>@(Content->'$(ContentDir)%(RecursiveDir)%(Filename)%(Extension)')</Destination>
+            </Content>
+            <Content Include="$(DesignerSource)">
+                <Destination>$(DesignerTarget)</Destination>
+            </Content>
+        </ItemGroup>
+
+        <Message Text="Copy %(Content.Identity) > %(Content.Destination)" Importance="high" />
+        
+        <Copy SourceFiles="@(Content)" 
+              DestinationFiles="@(Content->'%(Destination)')" 
+              ContinueOnError="false" 
+              SkipUnchangedFiles="true" 
+              OverwriteReadOnlyFiles="true" />
+
+        <!-- Make .Resources.Designer.cs aware of the target project assembly name. -->
+        <ReplaceContents FileName='$(DesignerTarget)' Match='ResourceManager("Microsoft.Practices' Replace='ResourceManager("$AssemblyName$.External' />
+
+        <Exec Command="&quot;$(NuGet)&quot; pack -NoPackageAnalysis $(PackageSpec) -OutputDirectory $(OutDir) -Version &quot;$(PackageVersion)&quot;" />
+    </Target>
+
+    <Target Name="Clean">
+        <Exec Command="rmdir &quot;$(PackageRoot)\content&quot; /S /Q" />
+    </Target>
+
+    <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project> 
