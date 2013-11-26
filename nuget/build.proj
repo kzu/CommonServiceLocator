@@ -48,6 +48,9 @@ File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Ma
             <Content Include="$(DesignerSource)">
                 <Destination>$(DesignerTarget)</Destination>
             </Content>
+            <Content Include="$(MSBuildThisFileDirectory)CommonServiceLocator.Source.nuspec">
+                <Destination>$(PackageSpec)</Destination>
+            </Content>
         </ItemGroup>
 
         <Message Text="Copy %(Content.Identity) > %(Content.Destination)" Importance="high" />
