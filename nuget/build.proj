@@ -22,18 +22,16 @@ File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Ma
         <NuGet Condition="'$(NuGet)' == ''">$(MSBuildThisFileDirectory)NuGet.exe</NuGet>
         <OutDir>"$(MSBuildThisFileDirectory.TrimEnd('\'))"</OutDir>
         <PackageRoot>$(MSBuildThisFileDirectory)package</PackageRoot>
-        <ContentDir>$(PackageRoot)\content\External\ServiceLocation\</ContentDir>
+        <RootNamespace>Microsoft.Practices.ServiceLocation</RootNamespace>
+        <PackageId>CommonServiceLocator</PackageId>
+        <ContentDir>$(PackageRoot)\content\External\$(PackageId)\</ContentDir>
         <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
         <PackageSpec>$(PackageRoot)\CommonServiceLocator.Source.nuspec</PackageSpec>
-
-        <DesignerSource>..\main\Microsoft.Practices.ServiceLocation\Properties\Resources.Designer.cs</DesignerSource>
-        <DesignerTarget>$(ContentDir)Properties\Resources.Designer.cs.pp</DesignerTarget>
     </PropertyGroup>
 
     <ItemGroup>
         <Excluded Include="..\main\Microsoft.Practices.ServiceLocation\ActivationException.Desktop.cs" />
         <Excluded Include="..\main\Microsoft.Practices.ServiceLocation\Properties\AssemblyInfo*.cs" />
-        <Excluded Include="$(DesignerSource)" />
 		<Content Include="..\main\Microsoft.Practices.ServiceLocation\**\*.cs" 
                  Exclude="@(Excluded)" />
 		<Content Include="..\main\Microsoft.Practices.ServiceLocation\**\*.resx" />
@@ -43,10 +41,7 @@ File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Ma
         <ItemGroup>
             <!-- Causes batching, which allows us to use a transform -->
             <Content Condition="'%(Content.Identity)' != ''">
-                <Destination>@(Content->'$(ContentDir)%(RecursiveDir)%(Filename)%(Extension)')</Destination>
-            </Content>
-            <Content Include="$(DesignerSource)">
-                <Destination>$(DesignerTarget)</Destination>
+                <Destination>@(Content->'$(ContentDir)%(RecursiveDir)%(Filename)%(Extension).pp')</Destination>
             </Content>
             <Content Include="$(MSBuildThisFileDirectory)CommonServiceLocator.Source.nuspec">
                 <Destination>$(PackageSpec)</Destination>
@@ -61,10 +56,25 @@ File.WriteAllText(this.FileName, File.ReadAllText(this.FileName).Replace(this.Ma
               SkipUnchangedFiles="true" 
               OverwriteReadOnlyFiles="true" />
 
-        <!-- Make .Resources.Designer.cs aware of the target project assembly name. -->
-        <ReplaceContents FileName='$(DesignerTarget)' Match='ResourceManager("Microsoft.Practices' Replace='ResourceManager("$AssemblyName$.External' />
-        <ReplaceContents FileName='$(PackageSpec)' Match='$PackageVersion$' Replace='$(PackageVersion)' />
-        
+        <!-- Make .Resources.Designer aware of the target project assembly name. -->
+        <ReplaceContents Condition="'%(Content.Filename)' == 'Resources.Designer'"
+                         FileName="%(Content.Destination)"
+                         Match='ResourceManager("$(RootNamespace)'
+                         Replace='ResourceManager("$AssemblyName$.External.$(PackageId)' />
+
+        <ReplaceContents Condition="'%(Content.Extension)' == '.cs'"
+                         FileName="%(Content.Destination)"
+                         Match="using $(RootNamespace).Properties;"
+                         Replace="using $rootnamespace$.$(PackageId).Properties;" />
+
+        <ReplaceContents FileName="$(PackageSpec)" Match="$PackageVersion$" Replace="$(PackageVersion)" />
+
+        <!-- Root namespace depends on installing project root namespace, so we replace all namespace declarations -->
+        <ReplaceContents Condition="'%(Content.Extension)' == '.cs'"
+                         FileName="%(Content.Destination)"
+                         Match='namespace $(RootNamespace)'
+                         Replace='namespace $rootnamespace$.$(PackageId)' />
+
         <Exec Command="&quot;$(NuGet)&quot; pack -NoPackageAnalysis &quot;$(PackageSpec)&quot; -OutputDirectory $(OutDir) -Version &quot;$(PackageVersion)&quot;" />
     </Target>
 
