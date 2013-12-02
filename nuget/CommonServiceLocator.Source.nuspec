@@ -3,9 +3,9 @@
     <metadata>
         <id>CommonServiceLocator.Source</id>
         <version>1.0</version>
-        <title>CommonServiceLocator.Source</title>
+        <title>CommonServiceLocator (Source)</title>
         <authors>Microsoft</authors>
-        <owners>Microsoft, ClariusLabs</owners>
+        <owners>Microsoft; ClariusLabs</owners>
         <licenseUrl>http://commonservicelocator.codeplex.com/license</licenseUrl>
         <projectUrl>http://commonservicelocator.codeplex.com/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
